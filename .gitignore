@@ -1,0 +1,4 @@
+build/
+prometheus-k8s-watcher
+token
+*.yml
