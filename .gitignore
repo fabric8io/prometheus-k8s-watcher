@@ -1,4 +1,5 @@
 build/
+release/
 prometheus-k8s-watcher
 token
 *.yml
