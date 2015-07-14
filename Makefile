@@ -24,11 +24,11 @@ release:
 	rm -rf build release && mkdir build release
 	for os in linux freebsd darwin ; do \
 		GOOS=$$os ARCH=amd64 godep go build -ldflags "-X main.Version $(VERSION)" -o build/$(NAME)-$$os-amd64 ; \
-		tar --transform 's|^build/||' --transform 's|-.*||' -czvf release/$(NAME)-$(VERSION)-$$os-amd64.tar.gz build/$(NAME)-$$os-amd64 README.md LICENSE ; \
+		tar --transform 's|^build/||' --transform 's|$(NAME)-.*|$(NAME)|' -czvf release/$(NAME)-$(VERSION)-$$os-amd64.tar.gz build/$(NAME)-$$os-amd64 README.md LICENSE ; \
 	done
 	GOOS=windows ARCH=amd64 godep go build -ldflags "-X main.Version $(VERSION)" -o build/$(NAME)-$(VERSION)-windows-amd64.exe
 	zip release/$(NAME)-$(VERSION)-windows-amd64.zip build/$(NAME)-$(VERSION)-windows-amd64.exe README.md LICENSE && \
-		echo -e "@ build/$(NAME)-$(VERSION)-windows-amd64.exe\n@=$(NAME).exe"  | zipnote -w release/$(NAME)-$(VERSION)-windows-amd64.zip
+		echo -e "@ build/$(NAME)-$(VERSION)-windows-amd64.exe\n@=$(NAME).exe" | zipnote -w release/$(NAME)-$(VERSION)-windows-amd64.zip
 	go get github.com/progrium/gh-release/...
 	gh-release create fabric8io/$(NAME) $(VERSION) \
 		$(shell git rev-parse --abbrev-ref HEAD) $(VERSION)
