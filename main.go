@@ -22,8 +22,10 @@ const (
 
 var (
 	argMaster           = flag.String("master", "https://kubernetes.default.svc.cluster.local", "The URL of the Kubernetes API server")
+	argApiVersion       = flag.String("api-version", "v1", "API version to use")
 	argInsecure         = flag.Bool("insecure", false, "If true, the server's certificate will not be checked for validity. This will make your HTTPS connections insecure.")
 	argBearerTokenFile  = flag.String("bearer-token-file", "/var/run/secrets/kubernetes.io/serviceaccount/token", "The file containing the bearer token.")
+	argCaCertFile       = flag.String("ca-cert-file", "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt", "The file containing the CA certificate.")
 	argNodeTargetsFile  = flag.String("nodes-file", "/etc/prometheus/config.d/nodes.yml", "The file to write the node targets to.")
 	argNodeReadOnlyPort = flag.Int("node-read-only-port", 10255, "The port that metrics can be retrieved from the nodes.")
 	nodesTemplate       = template.Must(template.New("nodes").Parse(nodesTemplateString))
@@ -41,6 +43,10 @@ func main() {
 		Host:        *argMaster,
 		Insecure:    *argInsecure,
 		BearerToken: string(bearerToken),
+		Version:     *argApiVersion,
+		TLSClientConfig: client.TLSClientConfig{
+			CAFile: *argCaCertFile,
+		},
 	}
 
 	client, err := client.New(&config)
