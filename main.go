@@ -44,15 +44,15 @@ func main() {
 		Insecure:    *argInsecure,
 		BearerToken: string(bearerToken),
 		Version:     *argApiVersion,
-		TLSClientConfig: client.TLSClientConfig{
-			CAFile: *argCaCertFile,
-		},
 	}
 
-	client, err := client.New(&config)
-	if err != nil {
-		log.Fatal(err)
+	if _, err := os.Stat(*argCaCertFile); err == nil {
+		config.TLSClientConfig = client.TLSClientConfig{
+			CAFile: *argCaCertFile,
+		}
 	}
+
+	client := client.NewOrDie(&config)
 	done := make(chan bool)
 	go watchNodes(client)
 	<-done
