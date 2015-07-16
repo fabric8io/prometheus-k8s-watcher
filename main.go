@@ -47,6 +47,7 @@ func main() {
 	}
 
 	if _, err := os.Stat(*argCaCertFile); err == nil {
+		config.Insecure = false
 		config.TLSClientConfig = client.TLSClientConfig{
 			CAFile: *argCaCertFile,
 		}
